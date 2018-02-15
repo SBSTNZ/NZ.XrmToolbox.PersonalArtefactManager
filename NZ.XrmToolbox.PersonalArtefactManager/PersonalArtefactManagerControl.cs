@@ -10,7 +10,7 @@ using XrmToolBox.Extensibility.Interfaces;
 
 namespace NZ.XrmToolbox.PersonalArtefactManager
 {
-    public partial class PersonalArtefactManagerControl : PluginControlBase, IStatusBarMessenger
+    public partial class PersonalArtefactManagerControl : PluginControlBase, IStatusBarMessenger, IGitHubPlugin, IHelpPlugin
     {
         private Settings _pluginSettings;
         private PluginContext _pluginCtx;
@@ -374,5 +374,27 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
         {
             btnDoMigration.Enabled = IsFormStateReadyForProcessing;
         }
+
+        #region Implementation of IGitHubPlugin
+
+        public string RepositoryName
+        {
+            get => "NZ.XrmToolbox.PersonalArtefactManager";
+        }
+        public string UserName
+        {
+            get => "SBSTNZ";
+        }
+
+        #endregion
+
+        #region Implementation of IHelpPlugin
+
+        public string HelpUrl
+        {
+            get => "https://github.com/SBSTNZ/NZ.XrmToolbox.PersonalArtefactManager/issues";
+        }
+
+        #endregion
     }
 }
