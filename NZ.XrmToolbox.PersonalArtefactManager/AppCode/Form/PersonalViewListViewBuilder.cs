@@ -13,7 +13,8 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode.Form
             {
                 String.Empty,
                 viewEntity.GetAttributeValue<string>("name"),
-                viewEntity.GetAttributeValue<string>("returnedtypecode")
+                viewEntity.GetAttributeValue<string>("returnedtypecode"),
+                viewEntity.Attributes.Contains("parentqueryid") ? "System" : "User"
             });
             item.Tag = artefact;
             return item;
@@ -33,19 +34,25 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode.Form
             var colArtefactName = new ColumnHeader()
             {
                 Text = "Name",
-                Width = 120,
+                Width = 160,
             };
             var colEntityName = new ColumnHeader()
             {
                 Text = "Entity",
-                Width = 160,
+                Width = 100,
             };
-            
+            var colOrigin = new ColumnHeader()
+            {
+                Text = "Origin",
+                Width = 60,
+            };
+
             target.Columns.AddRange(
                 new System.Windows.Forms.ColumnHeader[] {
                     colSelector,
                     colArtefactName,
-                    colEntityName
+                    colEntityName,
+                    colOrigin,
                 });
         }
     }
