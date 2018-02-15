@@ -2,19 +2,23 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>NZ.XrmToolbox.PersonalArtefactManager</id>
-        <version>2018.2.15.1</version>
+        <version>1.2018.2.5</version>
         <title>Personal Artefact Manager</title>
         <authors>Peter Geil</authors>
         <owners>Peter Geil</owners>
+        <projectUrl>https://github.com/SBSTNZ/NZ.XrmToolbox.PersonalArtefactManager</projectUrl>
         <iconUrl>https://raw.githubusercontent.com/SBSTNZ/NZ.XrmToolbox.PersonalArtefactManager/master/NZ.XrmToolbox.PersonalArtefactManager/Images/logo_nz_32x32.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Duplicate, Assign or Delete the Personal Views/Dashboards/Diagrams of your CRM users</description>
         <summary>Duplicate, Assign or Delete the Personal Views/Dashboards/Diagrams of your CRM users</summary>
-        <releaseNotes>2018.2.15.1 - Initial release</releaseNotes>
+        <releaseNotes>1.2018.2.5 - Minor improvements (show only distinct users)
+1.2018.2.4 - Change versioning scheme to XTB default
+2018.2.15.2 - Minor stability improvements
+2018.2.15.1 - Initial release</releaseNotes>
         <copyright>Copyright (C) 2018 Peter Geil</copyright>
         <tags>XrmToolBox CRM XRM Tool Personal Views Dashboards Diagrams</tags>
         <dependencies>
-            <dependency id="XrmToolBox" version="1.2017.11.20" />
+            <dependency id="XrmToolBox" version="1.2017.11.19" />
         </dependencies>
     </metadata>
     <files>
