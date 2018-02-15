@@ -31,7 +31,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         Orders = { new OrderExpression("internalemailaddress", OrderType.Ascending) },
                         PageInfo = { ReturnTotalRecordCount = true },
-                        ColumnSet = new ColumnSet("isdisabled", "internalemailaddress", "fullname"),
+                        ColumnSet = new ColumnSet("systemuserid", "isdisabled", "internalemailaddress", "fullname"),
                         LinkEntities = { new LinkEntity("systemuser", "systemuserroles", "systemuserid", "systemuserid", JoinOperator.Inner) },
                         Distinct = true
                     });
