@@ -94,6 +94,13 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
         public PersonalArtefactManagerControl()
         {
             InitializeComponent();
+            // Install default list item sorters
+            lvSourceUsers.ListViewItemSorter = new ListViewItemSorter(0);
+            lvSourceUsers.ColumnClick += ListViewItemSorter.OnColumnClick;
+            lvTargetUsers.ListViewItemSorter = new ListViewItemSorter(0);
+            lvTargetUsers.ColumnClick += ListViewItemSorter.OnColumnClick;
+            lvCrmArtefacts.ListViewItemSorter = new ListViewItemSorter(0);
+            lvCrmArtefacts.ColumnClick += ListViewItemSorter.OnColumnClick;
         }
 
         #region Application Event Handlers
