@@ -201,7 +201,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Tests\QueryRolesByUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -220,6 +219,7 @@
   <ItemGroup>
     <Folder Include="Forms\" />
     <Folder Include="Resources\" />
+    <Folder Include="Tests\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\Execute.png" />
