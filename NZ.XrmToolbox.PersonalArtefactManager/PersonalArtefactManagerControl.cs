@@ -222,13 +222,12 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
         /// <param name="e"></param>
         private void PersonalArtefactManagerControl_ConnectionUpdated(object sender, ConnectionUpdatedEventArgs e)
         {
-            _pluginSettings.LastUsedOrganizationWebappUrl = e.ConnectionDetail.WebApplicationUrl;
-            LogInfo("Connection has changed to: {0}", e.ConnectionDetail.WebApplicationUrl);
-
             ResetFormState();
 
             if (_isPluginLoaded)
             {
+                _pluginSettings.LastUsedOrganizationWebappUrl = e.ConnectionDetail.WebApplicationUrl;
+                LogInfo("Connection has changed to: {0}", e.ConnectionDetail.WebApplicationUrl);
                 // Reload users
                 btnLoadUsers.PerformClick();
             }                               
