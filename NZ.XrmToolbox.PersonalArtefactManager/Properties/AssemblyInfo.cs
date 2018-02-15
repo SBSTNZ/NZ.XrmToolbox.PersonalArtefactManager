@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NZ.XrmToolbox.PersonalDashboardMigrator")]
+[assembly: AssemblyTitle("NZ.XrmToolbox.PersonalArtefactManager")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NZ.XrmToolbox.PersonalDashboardMigrator")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCompany("Peter Geil")]
+[assembly: AssemblyProduct("NZ.XrmToolbox.PersonalArtefactManager")]
+[assembly: AssemblyCopyright("Copyright Peter Geil ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

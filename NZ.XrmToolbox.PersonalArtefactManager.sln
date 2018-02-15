@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NZ.XrmToolbox.PersonalDashboardMigrator", "NZ.XrmToolbox.PersonalDashboardMigrator\NZ.XrmToolbox.PersonalDashboardMigrator.csproj", "{37EBEA35-3825-4090-98CF-06C2B9D3C5E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NZ.XrmToolbox.PersonalArtefactManager", "NZ.XrmToolbox.PersonalArtefactManager\NZ.XrmToolbox.PersonalArtefactManager.csproj", "{37EBEA35-3825-4090-98CF-06C2B9D3C5E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
