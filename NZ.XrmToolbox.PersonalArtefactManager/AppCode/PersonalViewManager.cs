@@ -5,6 +5,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Security;
 using System.Windows.Forms;
+using Microsoft.Crm.Sdk;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -198,9 +199,14 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                             Orders = {new OrderExpression("name", OrderType.Ascending)},
                             PageInfo = {ReturnTotalRecordCount = true},
                             ColumnSet = new ColumnSet(true),
-                            Criteria = new FilterExpression
+                            Criteria = new FilterExpression(LogicalOperator.And)
                             {
-                                Conditions = {new ConditionExpression("ownerid", ConditionOperator.Equal, user.Id)}
+                                Conditions =
+                                {
+                                    new ConditionExpression("ownerid", ConditionOperator.Equal, user.Id),
+                                    // Only respect userqueries manually created by users
+                                    new ConditionExpression("querytype", ConditionOperator.Equal, UserQueryQueryType.MainApplicationView)
+                                }
                             }
                         });
                     }
