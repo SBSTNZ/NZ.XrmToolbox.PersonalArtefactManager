@@ -14,7 +14,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode.Form
                 String.Empty,
                 viewEntity.GetAttributeValue<string>("name"),
                 viewEntity.GetAttributeValue<string>("returnedtypecode"),
-                viewEntity.Attributes.Contains("parentqueryid") ? "System" : "User"
+                viewEntity.FormattedValues["modifiedon"]
             });
             item.Tag = artefact;
             return item;
@@ -41,9 +41,9 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode.Form
                 Text = "Entity",
                 Width = 100,
             };
-            var colOrigin = new ColumnHeader()
+            var colLastMod = new ColumnHeader()
             {
-                Text = "Origin",
+                Text = "Modified on",
                 Width = 60,
             };
 
@@ -52,7 +52,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode.Form
                     colSelector,
                     colArtefactName,
                     colEntityName,
-                    colOrigin,
+                    colLastMod,
                 });
         }
     }
