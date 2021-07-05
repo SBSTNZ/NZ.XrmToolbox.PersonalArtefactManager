@@ -29,7 +29,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
 
         #region Interface implementation "IPersonalArtefactManager"
 
-        public void Duplicate(IPersonalArtefact artefact, User owner)
+        public void Duplicate(IPersonalArtefact artefact, Owner owner)
         {
             var viewArtefact = (PersonalView)artefact;
             var viewEntity = viewArtefact.Entity;
@@ -54,7 +54,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                         };
 
                         var newViewEntity = new Entity(viewEntity.LogicalName);
-                        newViewEntity.Attributes["ownerid"] = owner.Entity.ToEntityReference();
+                        newViewEntity.Attributes["ownerid"] = owner;
                         foreach (var key in attribsToBeCopied)
                         {
                             if (viewEntity.Contains(key))
@@ -81,13 +81,13 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         var newRecordId = (Guid) args.Result;
                         Clipboard.SetText(newRecordId.ToString());
-                        MessageBox.Show($"Personal View successfully assigned to user \"{owner.Fullname}\" ({owner.Email} / {owner.Id}). New record Id was copied to clipboard ({newRecordId.ToString()})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+                        MessageBox.Show($"Personal View successfully assigned to user \"{owner.LogicalName}\" ({owner.Name} / {owner.Id}). New record Id was copied to clipboard ({newRecordId.ToString()})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
                     }
                 }
             });
         }
 
-        public void Assign(IPersonalArtefact artefact, User newOwner)
+        public void Assign(IPersonalArtefact artefact, Owner newOwner)
         {
             var viewArtefact = (PersonalView)artefact;
             var viewEntity = viewArtefact.Entity;
@@ -105,8 +105,8 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         var response = (AssignResponse)_pluginContext.Service.Execute(new AssignRequest()
                         {
-                            Assignee = newOwner.Entity.ToEntityReference(),
-                            Target = viewEntity .ToEntityReference()
+                            Assignee = newOwner,
+                            Target = viewEntity.ToEntityReference()
                         });
                     }
                     catch (Exception exc)
@@ -124,7 +124,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     }
                     else
                     {
-                        MessageBox.Show($"Personal View successfully assigned to user \"{newOwner.Fullname}\" ({newOwner.Email} / {newOwner.Id})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+                        MessageBox.Show($"Personal View successfully assigned to user \"{newOwner.LogicalName}\" ({newOwner.Name} / {newOwner.Id})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
                     }
                 }
             });
@@ -175,13 +175,13 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
         /// <summary>
         /// Query personal artefacts for given User
         /// </summary>
-        /// <param name="user" type="User"></param>
-        public void QueryByUser(User user)
+        /// <param name="owner" type="Owner"></param>
+        public void QueryByUser(Owner user)
         {                               
-            // Clear user list
+            // Clear owner list
             ReplaceViews(Array.Empty<Entity>());
 
-            if (user == null) return;
+            if (owner == null) return;
 
             _pluginContext.WorkAsync(new WorkAsyncInfo
             {
@@ -190,7 +190,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                 {
                     var client = _pluginContext.ConnectionDetail.GetCrmServiceClient();
                     var userIdBefore = client.CallerId;
-                    client.CallerId = user.Id;
+                    client.CallerId = owner.Id;
 
                     try
                     {
@@ -203,7 +203,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                             {
                                 Conditions =
                                 {
-                                    new ConditionExpression("ownerid", ConditionOperator.Equal, user.Id),
+                                    new ConditionExpression("ownerid", ConditionOperator.Equal, owner.Id),
                                     // Only respect userqueries manually created by users
                                     new ConditionExpression("querytype", ConditionOperator.Equal, UserQueryQueryType.MainApplicationView)
                                 }

@@ -169,7 +169,7 @@
     <Compile Include="AppCode\Form\ListViewItemSorter.cs" />
     <Compile Include="AppCode\Form\PersonalDashboardListViewBuilder.cs" />
     <Compile Include="AppCode\Form\PersonalDiagramListViewBuilder.cs" />
-    <Compile Include="AppCode\Form\UserListViewBuilder.cs" />
+    <Compile Include="AppCode\Form\OwnerListViewBuilder.cs" />
     <Compile Include="AppCode\IPersonalArtefact.cs" />
     <Compile Include="AppCode\IPersonalArtefactManager.cs" />
     <Compile Include="AppCode\Form\ListViewBuilder.cs" />
@@ -184,8 +184,8 @@
     <Compile Include="AppCode\PersonalViewManager.cs" />
     <Compile Include="AppCode\PluginContext.cs" />
     <Compile Include="AppCode\UnknownArtefactTypeError.cs" />
-    <Compile Include="AppCode\User.cs" />
-    <Compile Include="AppCode\UserManager.cs" />
+    <Compile Include="AppCode\Owner.cs" />
+    <Compile Include="AppCode\OwnerManager.cs" />
     <Compile Include="AppCode\Helpers\ErrorHelper.cs" />
     <Compile Include="AppCode\Form\ComboBoxItem.cs" />
     <Compile Include="PersonalArtefactManager.cs" />

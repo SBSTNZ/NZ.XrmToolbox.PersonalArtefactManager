@@ -14,7 +14,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
     {
         private Settings _pluginSettings;
         private PluginContext _pluginCtx;
-        private UserManager _userManager;
+        private OwnerManager _ownerManager;
         private UserListViewBuilder _userListViewBuilder;
         private ArtefactManagerFactory _artefactManagerFactory;
 
@@ -24,8 +24,8 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             get {
                 return btnDoMigration.Enabled = (SelectedOperation != null) 
                     && (SelectedCrmArtefacts.Length > 0)
-                    && (SelectedSourceUser != null)
-                    && (SelectedTargetUsers.Length > 0 || SelectedOperation == PluginOperation.Delete);
+                    && (SelectedSourceOwner != null)
+                    && (SelectedTargetOwners.Length > 0 || SelectedOperation == PluginOperation.Delete);
             }
         }
 
@@ -60,24 +60,24 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
                 return selectedOp;
             }
         }
-        private User SelectedSourceUser
+        private Owner SelectedSourceOwner
         {
             get
             {
                 return (lvSourceUsers.SelectedItems.Count == 0)
-                    ? null : (lvSourceUsers.SelectedItems[0]?.Tag as User);
+                    ? null : (lvSourceUsers.SelectedItems[0]?.Tag as Owner);
             }
         }
-        private User[] SelectedTargetUsers
+        private Owner[] SelectedTargetOwners
         {
             get
             {
-                var selUsers = new List<User>();
+                var selOwners = new List<Owner>();
                 foreach (ListViewItem item in lvTargetUsers.CheckedItems)
                 {
-                    selUsers.Add((User)item.Tag);
+                    selOwners.Add((Owner)item.Tag);
                 }
-                return selUsers.ToArray();
+                return selOwners.ToArray();
             }
         }
 
@@ -122,7 +122,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             }
 
             _pluginCtx = new PluginContext(this);
-            _userManager = new UserManager(_pluginCtx);
+            _ownerManager = new UserManager(_pluginCtx);
             _userListViewBuilder = new UserListViewBuilder();
             _artefactManagerFactory = new ArtefactManagerFactory(_pluginCtx); 
 
@@ -140,7 +140,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             });
 
             // Wire up application event handlers
-            _userManager.UserListUpdated += OnUserManagerOnUserListUpdated;
+            _ownerManager.UserListUpdated += OnUserManagerOnUserListUpdated;
             _artefactManagerFactory.ArtefactListUpdated += OnArtefactListUpdated;
             PersonalArtifactTypeSelected += OnArtefactTypeSelected;
             SourceUserSelected += OnSourceUserSelected;
@@ -166,13 +166,13 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
 
         private void OnUserManagerOnUserListUpdated(object evtSender, EventArgs evt)
         {
-            lblSourceUsersStatus.Text = lblTargetUsersStatus.Text = $"{_userManager.Users.Length} users found";
+            lblSourceUsersStatus.Text = lblTargetUsersStatus.Text = $"{_ownerManager.Owners.Length} owners found";
             // Populate list of source users
             _userListViewBuilder.HasCheckboxes = false;
-            _userListViewBuilder.BuildList(lvSourceUsers, _userManager.Users);
+            _userListViewBuilder.BuildList(lvSourceUsers, _ownerManager.Owners);
             // Populate list of target users
             _userListViewBuilder.HasCheckboxes = true;
-            _userListViewBuilder.BuildList(lvTargetUsers, _userManager.Users);
+            _userListViewBuilder.BuildList(lvTargetUsers, _ownerManager.Owners);
             // Update visibility state
             lvSourceUsers.Enabled = true;
             cbArtefactTypeSelector.Enabled = true;
@@ -182,7 +182,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
 
         private void OnSourceUserSelected(object evtSender, UserSelectedEventArgs evt)
         {
-            if (_artefactManagerFactory.IsKnownType(SelectedArtefactTypeName) == false || SelectedSourceUser == null)
+            if (_artefactManagerFactory.IsKnownType(SelectedArtefactTypeName) == false || SelectedSourceOwner == null)
             {
                 lvCrmArtefacts.Items.Clear();
                 lvCrmArtefacts.Enabled = true;
@@ -197,7 +197,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
         
         private void OnArtefactTypeSelected(object evtSender, ArtefactTypeSelectedEventArgs evt)
         {
-            if (SelectedSourceUser == null || !_artefactManagerFactory.IsKnownType(SelectedArtefactTypeName))
+            if (SelectedSourceOwner == null || !_artefactManagerFactory.IsKnownType(SelectedArtefactTypeName))
             {
                 lvCrmArtefacts.Items.Clear();
                 lvCrmArtefacts.Enabled = true;
@@ -254,7 +254,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             // Disable list views while loading
             lvSourceUsers.Enabled = lvCrmArtefacts.Enabled = lvTargetUsers.Enabled = false;
             // Invoke user re-load
-            ExecuteMethod(LoadCrmUsers);
+            ExecuteMethod(LoadCrmOwners);
         }
 
         
@@ -262,11 +262,11 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
         private void lvSourceUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectedItem = lvSourceUsers.SelectedItems.Count == 0 ? null : lvSourceUsers.SelectedItems[0];
-            var selectedUsers = new List<User>();
-            selectedUsers.Add(selectedItem?.Tag as User);
-            selectedUsers.RemoveAll(u => u == null);
+            var selectedOwners = new List<Owner>();
+            selectedOwners.Add(selectedItem?.Tag as Owner);
+            selectedOwners.RemoveAll(u => u == null);
             // Trigger event
-            SourceUserSelected(this, new UserSelectedEventArgs(selectedUsers.ToArray()));
+            SourceUserSelected(this, new UserSelectedEventArgs(selectedOwners.ToArray()));
         }
 
         private void cbArtefactTypeSelector_SelectedIndexChanged(object sender, EventArgs e)
@@ -285,8 +285,8 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
 
         private void btnDoMigration_Click(object sender, EventArgs e)
         {
-            if ((SelectedOperation == null) || (SelectedCrmArtefacts.Length == 0) || (SelectedSourceUser == null) ||
-                (SelectedTargetUsers.Length == 0 && SelectedOperation != PluginOperation.Delete))
+            if ((SelectedOperation == null) || (SelectedCrmArtefacts.Length == 0) || (SelectedSourceOwner == null) ||
+                (SelectedTargetOwners.Length == 0 && SelectedOperation != PluginOperation.Delete))
             {
                 return;
             }
@@ -326,13 +326,13 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             }
             else
             {
-                var nUnitsOfWork = lvCrmArtefacts.CheckedItems.Count * SelectedTargetUsers.Length;
+                var nUnitsOfWork = lvCrmArtefacts.CheckedItems.Count * SelectedTargetOwners.Length;
                 var nUnitsOfWorkDone = 0;
                 var percentagePerUnit = 100 / nUnitsOfWork;
 
                 SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(nUnitsOfWorkDone, $"Processing {nUnitsOfWork} artefacts"));
                 // Iterate through all possible artefact-user combinations and process
-                foreach (var targetUser in SelectedTargetUsers)
+                foreach (var targetUser in SelectedTargetOwners)
                 {
                     foreach (ListViewItem item in lvCrmArtefacts.CheckedItems)
                     {
@@ -365,14 +365,14 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             lvSourceUsers.Enabled = lvCrmArtefacts.Enabled = lvTargetUsers.Enabled = false;
         }
 
-        private void LoadCrmUsers()
+        private void LoadCrmOwners()
         {
-            _userManager.LoadSystemUsers();
+            _ownerManager.LoadSystemOwners();
         }
         private void LoadCrmArtefacts()
         {
             _artefactManagerFactory.GetManager(SelectedArtefactTypeName)
-                .QueryByUser(SelectedSourceUser);
+                .QueryByOwner(SelectedSourceOwner);
         }
 
         #endregion

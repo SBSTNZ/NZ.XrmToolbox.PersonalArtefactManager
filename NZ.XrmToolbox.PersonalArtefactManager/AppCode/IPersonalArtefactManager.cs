@@ -3,13 +3,13 @@
     internal interface IPersonalArtefactManager
     {
 
-        void Duplicate(IPersonalArtefact artefact, User owner);
+        void Duplicate(IPersonalArtefact artefact, Owner owner);
 
-        void Assign(IPersonalArtefact artefact, User newOwner);
+        void Assign(IPersonalArtefact artefact, Owner newOwner);
 
         void Delete(IPersonalArtefact artefact);
 
-        void QueryByUser(User user);
+        void QueryByOwner(Owner owner);
     }
 
     

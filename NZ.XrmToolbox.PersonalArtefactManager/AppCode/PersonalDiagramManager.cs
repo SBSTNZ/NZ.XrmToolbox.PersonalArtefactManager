@@ -25,7 +25,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
 
         #region Interface implementation "IPersonalArtefactManager"
 
-        public void Duplicate(IPersonalArtefact artefact, User owner)
+        public void Duplicate(IPersonalArtefact artefact, Owner owner)
         {
             var diagramArtefact = (PersonalDiagram)artefact;
             var diagramEntity = diagramArtefact.Entity;
@@ -48,7 +48,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                         };
 
                         var newDiagramEntity = new Entity(diagramEntity.LogicalName);
-                        newDiagramEntity.Attributes["ownerid"] = owner.Entity.ToEntityReference();
+                        newDiagramEntity.Attributes["ownerid"] = owner;
                         foreach (var key in attribsToBeCopied)
                         {
                             if (diagramEntity.Contains(key))
@@ -81,7 +81,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
             });
         }
 
-        public void Assign(IPersonalArtefact artefact, User newOwner)
+        public void Assign(IPersonalArtefact artefact, Owner newOwner)
         {
             var diagramArtefact = (PersonalDiagram)artefact;
             var diagramEntity = diagramArtefact.Entity;
@@ -99,8 +99,8 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         var response = (AssignResponse)_pluginContext.Service.Execute(new AssignRequest()
                         {
-                            Assignee = newOwner.Entity.ToEntityReference(),
-                            Target = diagramEntity .ToEntityReference()
+                            Assignee = newOwner,
+                            Target = diagramEntity.ToEntityReference()
                         });
                     }
                     catch (Exception exc)
@@ -118,7 +118,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     }
                     else
                     {
-                        MessageBox.Show($"Personal Diagram successfully assigned to user \"{newOwner.Fullname}\" ({newOwner.Email} / {newOwner.Id})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+                        MessageBox.Show($"Personal Diagram successfully assigned to user \"{newOwner.LogicalName}\" ({newOwner.Name} / {newOwner.Id})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
                     }
                 }
             });
@@ -167,15 +167,15 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
         }
 
         /// <summary>
-        /// Query personal artefacts for given User
+        /// Query personal artefacts for given Owner
         /// </summary>
-        /// <param name="user" type="User"></param>
-        public void QueryByUser(User user)
+        /// <param name="owner" type="Owner"></param>
+        public void QueryByUser(Owner owner)
         {                               
-            // Clear user list
+            // Clear owner list
             ReplaceDiagrams(Array.Empty<Entity>());
 
-            if (user == null) return;
+            if (owner == null) return;
 
             _pluginContext.WorkAsync(new WorkAsyncInfo
             {
@@ -184,7 +184,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                 {
                     var client = _pluginContext.ConnectionDetail.GetCrmServiceClient();
                     var userIdBefore = client.CallerId;
-                    client.CallerId = user.Id;
+                    client.CallerId = owner.Id;
 
                     try
                     {
@@ -195,7 +195,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                             ColumnSet = new ColumnSet(true),
                             Criteria = new FilterExpression
                             {
-                                Conditions = {new ConditionExpression("ownerid", ConditionOperator.Equal, user.Id)}
+                                Conditions = {new ConditionExpression("ownerid", ConditionOperator.Equal, owner.Id)}
                             }
                         });
                     }

@@ -37,7 +37,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
 
         #region Interface implementation "IPersonalArtefactManager"
 
-        public void Duplicate(IPersonalArtefact artefact, User owner)
+        public void Duplicate(IPersonalArtefact artefact, Owner owner)
         {
             var dashboardArtefact = (PersonalDashboard)artefact;
             var dashboardEntity = dashboardArtefact.Entity;
@@ -60,7 +60,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                         };
 
                         var newDashboardEntity = new Entity(dashboardEntity.LogicalName);
-                        newDashboardEntity.Attributes["ownerid"] = owner.Entity.ToEntityReference();
+                        newDashboardEntity.Attributes["ownerid"] = owner;
                         foreach (var key in attribsToBeCopied)
                         {
                             if (dashboardEntity.Contains(key))
@@ -87,13 +87,13 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         var newRecordId = (Guid) args.Result;
                         Clipboard.SetText(newRecordId.ToString());
-                        MessageBox.Show($"Personal Dashboard successfully duplicated and assigned to user \"{owner.Fullname}\" ({owner.Email} / {owner.Id}). New record Id was copied to clipboard ({newRecordId.ToString()})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+                        MessageBox.Show($"Personal Dashboard successfully duplicated and assigned to {owner.LogicalName} \"{owner.Name}\" ({owner.Id}). New record Id was copied to clipboard ({newRecordId.ToString()})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
                     }
                 }
             });
         }
 
-        public void Assign(IPersonalArtefact artefact, User newOwner)
+        public void Assign(IPersonalArtefact artefact, EntityReference newOwner)
         {
             var dashboardArtefact = (PersonalDashboard)artefact;
             var dashboardEntity = dashboardArtefact.Entity;
@@ -111,8 +111,8 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         var response = (AssignResponse)_pluginContext.Service.Execute(new AssignRequest()
                         {
-                            Assignee = newOwner.Entity.ToEntityReference(),
-                            Target = dashboardEntity .ToEntityReference()
+                            Assignee = newOwner,
+                            Target = dashboardEntity.ToEntityReference()
                         });
                     }
                     catch (Exception exc)
@@ -181,13 +181,13 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
         /// <summary>
         /// Query personal artefacts for given User
         /// </summary>
-        /// <param name="user" type="User"></param>
-        public void QueryByUser(User user)
+        /// <param name="owner" type="Owner"></param>
+        public void QueryByOwner(Owner owner)
         {                               
             // Clear user list
             ReplaceDashboards(Array.Empty<Entity>());
 
-            if (user == null) return;
+            if (owner == null) return;
 
             _pluginContext.WorkAsync(new WorkAsyncInfo
             {
@@ -196,7 +196,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                 {
                     var client = _pluginContext.ConnectionDetail.GetCrmServiceClient();
                     var userIdBefore = client.CallerId;
-                    client.CallerId = user.Id;
+                    client.CallerId = owner.Id;
 
                     try
                     {
@@ -207,7 +207,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                             ColumnSet = new ColumnSet(true),
                             Criteria = new FilterExpression
                             {
-                                Conditions = {new ConditionExpression("ownerid", ConditionOperator.Equal, user.Id)}
+                                Conditions = {new ConditionExpression("ownerid", ConditionOperator.Equal, owner.Id)}
                             }
                         });
                     }
@@ -236,8 +236,6 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
         }
 
         #endregion
-
-
         
     }
 }
