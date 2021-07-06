@@ -2,13 +2,13 @@
 
 namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode.Events
 {
-    internal class UserSelectedEventArgs : EventArgs
+    internal class OwnerSelectedEventArgs : EventArgs
     {
-        public User[] UserSelection { get; private set; }
+        public Owner[] OwnerSelection { get; private set; }
 
-        internal UserSelectedEventArgs(User[] users)
+        internal OwnerSelectedEventArgs(Owner[] owners)
         {
-            UserSelection = users;
+            OwnerSelection = owners;
         }        
     }
 }

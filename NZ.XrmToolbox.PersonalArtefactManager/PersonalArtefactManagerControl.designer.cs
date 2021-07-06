@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.lvSourceUsers = new System.Windows.Forms.ListView();
-            this.colUserEmail = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colUserName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colOwnerName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colOwnerLogicalName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lvCrmArtefacts = new System.Windows.Forms.ListView();
             this.colSelArtefacts = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colArtefactName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -74,8 +74,8 @@
             this.lvSourceUsers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lvSourceUsers.CheckBoxes = true;
             this.lvSourceUsers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colUserEmail,
-            this.colUserName});
+            this.colOwnerName,
+            this.colOwnerLogicalName});
             this.lvSourceUsers.Enabled = false;
             this.lvSourceUsers.FullRowSelect = true;
             this.lvSourceUsers.GridLines = true;
@@ -91,15 +91,15 @@
             this.lvSourceUsers.View = System.Windows.Forms.View.Details;
             this.lvSourceUsers.SelectedIndexChanged += new System.EventHandler(this.lvSourceUsers_SelectedIndexChanged);
             // 
-            // colUserEmail
+            // colOwnerName
             // 
-            this.colUserEmail.Text = "Email";
-            this.colUserEmail.Width = 120;
+            this.colOwnerName.Text = "Name";
+            this.colOwnerName.Width = 120;
             // 
-            // colUserName
+            // colOwnerLogicalName
             // 
-            this.colUserName.Text = "Fullname";
-            this.colUserName.Width = 160;
+            this.colOwnerLogicalName.Text = "LogicalName";
+            this.colOwnerLogicalName.Width = 160;
             // 
             // lvCrmArtefacts
             // 
@@ -172,12 +172,12 @@
             // 
             // columnHeader5
             // 
-            this.columnHeader5.Text = "Email";
+            this.columnHeader5.Text = "Name";
             this.columnHeader5.Width = 120;
             // 
             // columnHeader6
             // 
-            this.columnHeader6.Text = "Fullname";
+            this.columnHeader6.Text = "LogicalName";
             this.columnHeader6.Width = 160;
             // 
             // tblLayoutListViews
@@ -217,7 +217,7 @@
             this.lblTargetUsersCaption.Name = "lblTargetUsersCaption";
             this.lblTargetUsersCaption.Size = new System.Drawing.Size(135, 17);
             this.lblTargetUsersCaption.TabIndex = 19;
-            this.lblTargetUsersCaption.Text = "3) Target User(s)";
+            this.lblTargetUsersCaption.Text = "3) Target User(s)/Team(s)";
             // 
             // lblCrmArtefactsCaption
             // 
@@ -273,7 +273,7 @@
             this.lblSourceUsersCaption.Name = "lblSourceUsersCaption";
             this.lblSourceUsersCaption.Size = new System.Drawing.Size(118, 17);
             this.lblSourceUsersCaption.TabIndex = 17;
-            this.lblSourceUsersCaption.Text = "1) Source User";
+            this.lblSourceUsersCaption.Text = "1) Source User/Team";
             // 
             // cbOperationSelector
             // 
@@ -448,8 +448,8 @@
         #endregion
         private System.Windows.Forms.ToolStrip toolStripMenu;
         
-        private System.Windows.Forms.ColumnHeader colUserEmail;
-        private System.Windows.Forms.ColumnHeader colUserName;
+        private System.Windows.Forms.ColumnHeader colOwnerName;
+        private System.Windows.Forms.ColumnHeader colOwnerLogicalName;
 		
         private System.Windows.Forms.ListView lvCrmArtefacts;
         private System.Windows.Forms.ColumnHeader colArtefactName;
