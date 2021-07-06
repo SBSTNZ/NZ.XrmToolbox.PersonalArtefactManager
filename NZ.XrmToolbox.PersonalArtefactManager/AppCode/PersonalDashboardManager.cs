@@ -60,7 +60,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                         };
 
                         var newDashboardEntity = new Entity(dashboardEntity.LogicalName);
-                        newDashboardEntity.Attributes["ownerid"] = owner;
+                        newDashboardEntity.Attributes["ownerid"] = owner.entityReference;
                         foreach (var key in attribsToBeCopied)
                         {
                             if (dashboardEntity.Contains(key))
@@ -93,7 +93,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
             });
         }
 
-        public void Assign(IPersonalArtefact artefact, EntityReference newOwner)
+        public void Assign(IPersonalArtefact artefact, Owner newOwner)
         {
             var dashboardArtefact = (PersonalDashboard)artefact;
             var dashboardEntity = dashboardArtefact.Entity;
@@ -111,7 +111,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         var response = (AssignResponse)_pluginContext.Service.Execute(new AssignRequest()
                         {
-                            Assignee = newOwner,
+                            Assignee = newOwner.entityReference,
                             Target = dashboardEntity.ToEntityReference()
                         });
                     }
@@ -130,7 +130,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     }
                     else
                     {
-                        MessageBox.Show($"Personal Dashboard successfully assigned to user \"{newOwner.Fullname}\" ({newOwner.Email} / {newOwner.Id})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+                        MessageBox.Show($"Personal Dashboard successfully assigned to user \"{newOwner.LogicalName}\" ({newOwner.Name} / {newOwner.Id})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
                     }
                 }
             });

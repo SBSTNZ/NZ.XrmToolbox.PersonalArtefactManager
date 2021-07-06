@@ -12,18 +12,17 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
             get => entityReference.Id;
         }
 
-        public String Name
-        {
-            get => entityReference.Name ?? String.Empty;
-        }
-         public String LogicalName
+        public String Name;
+
+        public String LogicalName
         {
             get => entityReference.LogicalName ?? String.Empty;
         }
 
-        public Owner(EntityReference entityRef)
+        public Owner(EntityReference entityRef, String name)
         {
             entityReference = entityRef;
+            Name = name;
         }
 
     }

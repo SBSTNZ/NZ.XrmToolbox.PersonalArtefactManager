@@ -12,6 +12,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
     {
         private readonly PluginContext _pluginContext;
         public Owner[] Owners { get; private set; } = new Owner[] { };
+        private Owner[] Teams = new Owner[] { };
 
         public event EventHandler OwnerListUpdated;
 
@@ -33,6 +34,22 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                         PageInfo = { ReturnTotalRecordCount = true },
                         ColumnSet = new ColumnSet("systemuserid", "isdisabled", "internalemailaddress", "fullname"),
                         LinkEntities = { new LinkEntity("systemuser", "systemuserroles", "systemuserid", "systemuserid", JoinOperator.Inner) },
+                        Criteria =
+                        {
+                            Filters =
+                            {
+                                new FilterExpression
+                                {
+                                    FilterOperator = LogicalOperator.And,
+                                    Conditions =
+                                    {
+                                        new ConditionExpression("isdisabled", ConditionOperator.Equal, false),
+                                        new ConditionExpression("accessmode", ConditionOperator.NotEqual, 3),
+                                        new ConditionExpression("accessmode", ConditionOperator.NotEqual, 5),
+                                    }
+                                }
+                            }
+                        },
                         Distinct = true
                     });
                 },
@@ -50,7 +67,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                         var resultSet = args.Result as EntityCollection;
                         if (resultSet != null)
                         {
-                            Owners = resultSet.Entities.Select(e => new Owner(e.ToEntityReference())).ToArray();
+                            Owners = resultSet.Entities.Select(e => new Owner(e.ToEntityReference(), e.GetAttributeValue<String>("fullname"))).ToArray();
                         }
                     }
                     // There might be a cleaner way to do this
@@ -58,29 +75,43 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     _pluginContext.WorkAsync(new WorkAsyncInfo
                     {
                         Message = "Query list of teams",
-                        Work = (worker, args) =>
+                        Work = (worker2, args2) =>
                         {
-                            args.Result = _pluginContext.Service.RetrieveMultiple(new QueryExpression("team")
+                            args2.Result = _pluginContext.Service.RetrieveMultiple(new QueryExpression("team")
                             {
                                 Orders = { new OrderExpression("name", OrderType.Ascending) },
                                 PageInfo = { ReturnTotalRecordCount = true },
-                                ColumnSet = new ColumnSet("teamid", "isdisabled", "name"),
+                                ColumnSet = new ColumnSet("teamid", "teamtype", "name"),
+                                Criteria =
+                                {
+                                    Filters =
+                                    {
+                                        new FilterExpression
+                                        {
+                                            FilterOperator = LogicalOperator.And,
+                                            Conditions =
+                                            {
+                                                new ConditionExpression("teamtype", ConditionOperator.Equal, 0)
+                                            }
+                                        }
+                                    }
+                                },
                                 Distinct = true
                             });
                         },
-                        PostWorkCallBack = (args) =>
+                        PostWorkCallBack = (args2) =>
                         {
-                            if (args.Error != null)
+                            if (args2.Error != null)
                             {
-                                MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show(args2.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                             else
                             {
-                                var resultSet = args.Result as EntityCollection;
+                                var resultSet = args2.Result as EntityCollection;
                                 if (resultSet != null)
                                 {
-                                    Teams = resultSet.Entities.Select(e => new Owner(e.ToEntityReference())).ToArray();
-                                    Owners = Owners.Concat(Teams).ToList();
+                                    Teams = resultSet.Entities.Select(e => new Owner(e.ToEntityReference(), e.GetAttributeValue<String>("name"))).ToArray();
+                                    Owners = Owners.Concat(Teams).ToArray();
                                 }
                             }
                             // Notify all subscribers

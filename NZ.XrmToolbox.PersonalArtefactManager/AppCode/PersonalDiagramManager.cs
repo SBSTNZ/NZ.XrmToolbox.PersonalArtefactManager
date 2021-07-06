@@ -48,7 +48,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                         };
 
                         var newDiagramEntity = new Entity(diagramEntity.LogicalName);
-                        newDiagramEntity.Attributes["ownerid"] = owner;
+                        newDiagramEntity.Attributes["ownerid"] = owner.entityReference;
                         foreach (var key in attribsToBeCopied)
                         {
                             if (diagramEntity.Contains(key))
@@ -75,7 +75,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         var newRecordId = (Guid) args.Result;
                         Clipboard.SetText(newRecordId.ToString());
-                        MessageBox.Show($"Personal Diagram successfully duplicated and assigned to user \"{owner.Fullname}\" ({owner.Email} / {owner.Id}). New record Id was copied to clipboard ({newRecordId.ToString()})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+                        MessageBox.Show($"Personal Diagram successfully duplicated and assigned to user \"{owner.LogicalName}\" ({owner.Name} / {owner.Id}). New record Id was copied to clipboard ({newRecordId.ToString()})", "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
                     }
                 }
             });
@@ -99,7 +99,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         var response = (AssignResponse)_pluginContext.Service.Execute(new AssignRequest()
                         {
-                            Assignee = newOwner,
+                            Assignee = newOwner.entityReference,
                             Target = diagramEntity.ToEntityReference()
                         });
                     }
@@ -170,7 +170,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
         /// Query personal artefacts for given Owner
         /// </summary>
         /// <param name="owner" type="Owner"></param>
-        public void QueryByUser(Owner owner)
+        public void QueryByOwner(Owner owner)
         {                               
             // Clear owner list
             ReplaceDiagrams(Array.Empty<Entity>());

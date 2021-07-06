@@ -54,7 +54,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                         };
 
                         var newViewEntity = new Entity(viewEntity.LogicalName);
-                        newViewEntity.Attributes["ownerid"] = owner;
+                        newViewEntity.Attributes["ownerid"] = owner.entityReference;
                         foreach (var key in attribsToBeCopied)
                         {
                             if (viewEntity.Contains(key))
@@ -105,7 +105,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
                     {
                         var response = (AssignResponse)_pluginContext.Service.Execute(new AssignRequest()
                         {
-                            Assignee = newOwner,
+                            Assignee = newOwner.entityReference,
                             Target = viewEntity.ToEntityReference()
                         });
                     }
@@ -176,7 +176,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode
         /// Query personal artefacts for given User
         /// </summary>
         /// <param name="owner" type="Owner"></param>
-        public void QueryByUser(Owner user)
+        public void QueryByOwner(Owner owner)
         {                               
             // Clear owner list
             ReplaceViews(Array.Empty<Entity>());

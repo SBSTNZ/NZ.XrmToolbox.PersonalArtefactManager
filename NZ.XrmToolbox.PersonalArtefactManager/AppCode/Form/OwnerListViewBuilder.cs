@@ -15,7 +15,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager.AppCode.Form
 
         public override ListViewItem BuildItem(object artefact)
         {
-            var owner = (EntityReference)artefact;
+            var owner = (Owner)artefact;
             var cells = new List<string>();
 
             if (HasCheckboxes) cells.Add(String.Empty);

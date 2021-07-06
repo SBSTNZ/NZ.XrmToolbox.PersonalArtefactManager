@@ -15,7 +15,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
         private Settings _pluginSettings;
         private PluginContext _pluginCtx;
         private OwnerManager _ownerManager;
-        private UserListViewBuilder _userListViewBuilder;
+        private OwnerListViewBuilder _ownerListViewBuilder;
         private ArtefactManagerFactory _artefactManagerFactory;
 
         private bool _isPluginLoaded = false;
@@ -86,8 +86,8 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
         public event EventHandler<StatusBarMessageEventArgs> SendMessageToStatusBar;
         internal event EventHandler<ArtefactTypeSelectedEventArgs> PersonalArtifactTypeSelected;
         internal event EventHandler PersonalArtifactSelected;
-        internal event EventHandler<UserSelectedEventArgs> SourceUserSelected;
-        internal event EventHandler<UserSelectedEventArgs> TargetUserSelected;
+        internal event EventHandler<OwnerSelectedEventArgs> SourceUserSelected;
+        internal event EventHandler<OwnerSelectedEventArgs> TargetUserSelected;
 
         #endregion
 
@@ -122,8 +122,8 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             }
 
             _pluginCtx = new PluginContext(this);
-            _ownerManager = new UserManager(_pluginCtx);
-            _userListViewBuilder = new UserListViewBuilder();
+            _ownerManager = new OwnerManager(_pluginCtx);
+            _ownerListViewBuilder = new OwnerListViewBuilder();
             _artefactManagerFactory = new ArtefactManagerFactory(_pluginCtx); 
 
             // Initialize controls
@@ -140,7 +140,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             });
 
             // Wire up application event handlers
-            _ownerManager.UserListUpdated += OnUserManagerOnUserListUpdated;
+            _ownerManager.OwnerListUpdated += OnOwnerManagerOnUserListUpdated;
             _artefactManagerFactory.ArtefactListUpdated += OnArtefactListUpdated;
             PersonalArtifactTypeSelected += OnArtefactTypeSelected;
             SourceUserSelected += OnSourceUserSelected;
@@ -164,15 +164,15 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             btnDoMigration.Enabled = IsFormStateReadyForProcessing;
         }
 
-        private void OnUserManagerOnUserListUpdated(object evtSender, EventArgs evt)
+        private void OnOwnerManagerOnUserListUpdated(object evtSender, EventArgs evt)
         {
             lblSourceUsersStatus.Text = lblTargetUsersStatus.Text = $"{_ownerManager.Owners.Length} owners found";
             // Populate list of source users
-            _userListViewBuilder.HasCheckboxes = false;
-            _userListViewBuilder.BuildList(lvSourceUsers, _ownerManager.Owners);
+            _ownerListViewBuilder.HasCheckboxes = false;
+            _ownerListViewBuilder.BuildList(lvSourceUsers, _ownerManager.Owners);
             // Populate list of target users
-            _userListViewBuilder.HasCheckboxes = true;
-            _userListViewBuilder.BuildList(lvTargetUsers, _ownerManager.Owners);
+            _ownerListViewBuilder.HasCheckboxes = true;
+            _ownerListViewBuilder.BuildList(lvTargetUsers, _ownerManager.Owners);
             // Update visibility state
             lvSourceUsers.Enabled = true;
             cbArtefactTypeSelector.Enabled = true;
@@ -180,7 +180,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             btnDoMigration.Enabled = IsFormStateReadyForProcessing;
         }
 
-        private void OnSourceUserSelected(object evtSender, UserSelectedEventArgs evt)
+        private void OnSourceUserSelected(object evtSender, OwnerSelectedEventArgs evt)
         {
             if (_artefactManagerFactory.IsKnownType(SelectedArtefactTypeName) == false || SelectedSourceOwner == null)
             {
@@ -266,7 +266,7 @@ namespace NZ.XrmToolbox.PersonalArtefactManager
             selectedOwners.Add(selectedItem?.Tag as Owner);
             selectedOwners.RemoveAll(u => u == null);
             // Trigger event
-            SourceUserSelected(this, new UserSelectedEventArgs(selectedOwners.ToArray()));
+            SourceUserSelected(this, new OwnerSelectedEventArgs(selectedOwners.ToArray()));
         }
 
         private void cbArtefactTypeSelector_SelectedIndexChanged(object sender, EventArgs e)
